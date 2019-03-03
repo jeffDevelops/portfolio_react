@@ -1,28 +1,40 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, Fragment } from 'react';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+import { ThemeProvider } from 'styled-components';
+import theme from './utils/theme';
+import GlobalStyles from './utils/GlobalStyles';
+
+import Splash from './components/Splash';
+import About from './components/About';
+import SpecializationsHeading from './components/SpecializationsASCII';
+import MongoPanel from './components/MongoPanel';
+import ExpressPanel from './components/ExpressPanel';
+import ReactPanel from './components/ReactPanel';
+import NodePanel from './components/NodePanel';
+import MetricsHeading from './components/MetricsHeading';
+import MetricsPanel from './components/MetricsPanel';
+
+const App = () => {
+
+  return (
+    <Fragment>
+      <GlobalStyles />
+
+      <ThemeProvider theme={ theme }>
+        <Fragment>
+          <Splash />
+          <About />
+          <SpecializationsHeading />
+          <MongoPanel />
+          <ExpressPanel />
+          <ReactPanel />
+          <NodePanel />
+          <MetricsHeading />
+          <MetricsPanel />
+        </Fragment>
+      </ThemeProvider>
+    </Fragment>
+  )
 }
 
 export default App;
