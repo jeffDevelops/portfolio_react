@@ -24,7 +24,9 @@ class Metrics extends Component {
 
   githubAPICall = () => {
     this.setState({ apiCallHasFired: true });
-    console.log('API CALL FIRED')
+    console.log('API CALL FIRED');
+
+    get()
   }
 
   debouncedGithubAPICall = _.debounce(this.githubAPICall, 1000);
