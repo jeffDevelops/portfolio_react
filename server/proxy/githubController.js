@@ -24,10 +24,8 @@ module.exports = {
         .catch(error => console.error(error)));
 
       return Promise.all(eventPromises)
-        .then(results => {
-          console.log('EVENTS: ', results);
-          return results;
-        });
+        .then(results => results)
+        .catch(error => console.error(error));
     }
 
     async function getAllRepoUrls() {
@@ -56,10 +54,18 @@ module.exports = {
 
       Promise.all(promises)
         .then(result => {
-          console.log(result);
-          // result
-          // .map((repo, index) => ({ [repoObjs[index].name]: repo ? repo[0] : null }))
-          // .filter(repo => repo[Object.keys(repo)[0]]) // filter the ones that don't have info
+          
+          const events = result[result.length - 1]; // getPushEvents() is called as the last element in promises
+
+          result.splice(result.length - 1, 1); // remove the events element in order to process the languageInfo
+          const languageInfo = result
+            .map((repo, index) => ({ [repoObjs[index].name]: repo ? repo[0] : null }))
+            .filter(repo => repo[Object.keys(repo)[0]]) // filter the ones that don't have info
+
+          res.json({
+            languageInfo,
+            events
+          });
         })
         .catch(error => console.error(error));
     }
