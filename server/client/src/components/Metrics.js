@@ -7,38 +7,46 @@ import _ from 'lodash';
 
 class Metrics extends Component {
   state = {
-    apiCallHasFired: false,
+    events: null,
+    languages: null,
   }
 
   componentDidMount() {
-    console.log(this.props, this.props.scrollPosition);
-  }
+    localStorage.setItem('GITHUB_TIMESTAMP', new Date().toUTCString());
 
-  componentDidUpdate(prevProps) {
-    if (!_.isEqual(this.props, prevProps)) {
-      console.log('COMPONENT UPDATED!');
+    const cachedLangData = localStorage.getItem('GITHUB_LANGUAGES');
+    const cachedEventsData = localStorage.getItem('GITHUB_EVENTS');
 
-      localStorage.setItem('GITHUB_TIMESTAMP', new Date().toUTCString());
+    if (!cachedLangData) {
+      this.getLangData();
+    } else {
+      this.setState({ languages: JSON.parse(cachedLangData) });
+    }
 
-      if (!this.state.apiCallHasFired) {
-        this.debouncedGithubAPICall();
-      }
+    if (!cachedEventsData) {
+      this.getEventsData();
+    } else {
+      this.setState({ events: JSON.parse(cachedEventsData) });
     }
   }
 
-  githubAPICall = () => {
-    this.setState({ apiCallHasFired: true });
-    console.log('DEBOUNCED PROXY CALL FIRED');
-
-    get(`/proxies/personal_github/${encodeURI(localStorage.getItem('GITHUB_TIMESTAMP'))}`)
+  getLangData = () => {
+    get(`/proxies/personal_github/languages/${encodeURI(localStorage.getItem('GITHUB_TIMESTAMP'))}`)
       .then(response => {
-        console.log(response.data);
-        localStorage.setItem('PERSONAL_GITHUB', JSON.stringify(response.data));
+        localStorage.setItem('GITHUB_LANGUAGES', JSON.stringify(response.data));
+        this.setState({ languages: response.data });
       })
       .catch(error => console.error(error));
   }
 
-  debouncedGithubAPICall = _.debounce(this.githubAPICall, 1000);
+  getEventsData = () => {
+    get(`/proxies/personal_github/events/${encodeURI(localStorage.getItem('GITHUB_TIMESTAMP'))}`)
+      .then(response => {
+        localStorage.setItem('GITHUB_EVENTS', JSON.stringify(response.data));
+        this.setState({ events: response.data });
+      })
+      .catch(error => console.error(error));
+  }
 
   render() {
     return null;
