@@ -54,8 +54,11 @@ module.exports = {
 
       Promise.all(promises)
         .then(result => {
-          
-          const events = result[result.length - 1]; // getPushEvents() is called as the last element in promises
+
+          const events = result[result.length - 1] // getPushEvents() is called as the last element in promises
+            .map(dataArr => dataArr && dataArr[0] ? dataArr[0] : dataArr)  // filter out the response metadata by only returning element 0
+            .filter(eventList => eventList && eventList.length && eventList.length > 0) // strip out events arrays whose length is 0 and pointless to send in the response
+            .reduce((a, b) => a.concat(b), []) // concat the arrays together
 
           result.splice(result.length - 1, 1); // remove the events element in order to process the languageInfo
           const languageInfo = result
