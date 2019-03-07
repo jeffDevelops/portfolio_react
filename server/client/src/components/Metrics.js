@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+
+import LanguagesPie from './LanguagesPie';
 
 import { get } from 'axios';
-import moment from 'moment';
-import tz from 'moment-timezone';
 import _ from 'lodash';
 
 class Metrics extends Component {
@@ -17,13 +17,13 @@ class Metrics extends Component {
     const cachedLangData = localStorage.getItem('GITHUB_LANGUAGES');
     const cachedEventsData = localStorage.getItem('GITHUB_EVENTS');
 
-    if (!cachedLangData) {
+    if (!cachedLangData) { // TODO: don't cache the data for too long!
       this.getLangData();
     } else {
       this.setState({ languages: JSON.parse(cachedLangData) });
     }
 
-    if (!cachedEventsData) {
+    if (!cachedEventsData) { // TODO: don't cache the data for too long!
       this.getEventsData();
     } else {
       this.setState({ events: JSON.parse(cachedEventsData) });
@@ -49,7 +49,17 @@ class Metrics extends Component {
   }
 
   render() {
-    return null;
+    const { state } = this;
+    return (
+      <Fragment>
+        { state.languages
+          ? <LanguagesPie
+              languageData={ state.languages }
+            />
+          : 'LOADING'
+        }
+      </Fragment>
+    )
   }
 }
 
